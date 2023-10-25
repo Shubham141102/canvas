@@ -1,37 +1,28 @@
-import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.functions._
-val sc = SparkSession.builder().getOrCreate()
-var base_df = sc.read.option("header","true").csv("weblog.csv")
-base_df.printSchema()
-base_df.show(10)
-var sliced = base_df.withColumn("Time",expr("substring(Time,2,length(Time))"))
-sliced.show(10)
-var ip_reg = sliced.filter(col("IP").rlike("""^(?:[0-9]{1,3}\.){3}[0-9]{1,3}"""))
-ip_reg.show(10)
-ip_reg = ip_reg.withColumn("Date",expr("substring(Time,1,11)"))
-ip_reg.groupBy("IP").count().sort(desc("count")).show()
-ip_reg.groupBy("URL").count().sort(desc("count")).show(5)
-ip_reg.select($"IP").distinct().show()
-ip_reg.where($"Staus"===404).count()
-ip_reg.select($"IP").where($"Staus"===404).groupBy("IP").count().show(25)
-ip_reg.select($"IP",$"Date").distinct().groupBy("Date").count().show()
-
-EMOTICONS=[':-<',':->']
-def remove_emoticons(text):
-    emoticon_pattern = re.compile(u'(' + u'|'.join(k for k in EMOTICONS) + u')')
-    return emoticon_pattern.sub(r'', text)
-df['clean_emoji']= df['clean_msg'].apply(lambda text: remove_emoji(text))
-remove_emoticons("Hello.Good Morning, Have a nice day :->")
-
-
-def remove_emoji(review):
- emoji_pattern = re.compile("["
- u"\U0001F600-\U0001F64F" # emoticons
-u"\U0001F300-\U0001F5FF" # symbols & pictographs
-u"\U0001F680-\U0001F6FF" # transport & map symbols
-u"\U0001F1E0-\U0001F1FF" # flags (iOS)
-u"\U00002702-\U000027B0"
-u"\U000024C2-\U0001F251"
-"]+", flags=re.UNICODE)
- return emoji_pattern.sub(r'',review)
-review
+{
+struct Student
+{
+int stud_id;
+string name;
+string department;
+}
+Student[] Students;
+function add_stud(int stud_id,string memory name, string memory department)
+public
+{
+Student memory stud = Student(stud_id,name,department);
+Students.push(stud);
+}
+function getStudent(int stud_id) public view returns(string memory, string
+memory)
+{
+for (uint i=0; i<Students.length;i++)
+{
+Student memory stud = Students[i];
+if(stud.stud_id==stud_id)
+{
+return(stud.name,stud.department);
+}
+}
+return("Not Found", "Not Found");
+}
+}
